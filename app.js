@@ -4,15 +4,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const errorController = require("./controllers/error");
-const sequelize = require("./util/database");
-const Product = require("./models/product");
-const User = require("./models/user");
-const Cart = require("./models/cart");
-const CartItem = require("./models/cart-item");
-const Order = require("./models/order");
-const OrderItem = require("./models/order-item");
-
 const app = express();
+
+const User = require("./models/user");
+const mongoConnect = require("./util/database").mongoConnect;
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -23,9 +18,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
-  User.findByPk(1)
+  User.findUserById("60e47e3a99b68291c67b0f7a")
     .then((user) => {
-      req.user = user;
+      req.user = new User(user.name, user.email, user.cart, user._id);
       next();
     })
     .catch((error) => console.log(error));
@@ -36,42 +31,6 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-// one-to-
-// Method 1:-
-Product.belongsTo(User, {
-  constraints: true,
-  onDelete: "CASCADE",
+mongoConnect(() => {
+  app.listen(3000);
 });
-//Method 2:-
-User.hasMany(Product);
-
-// Cart table
-User.hasOne(Cart);
-Cart.belongsTo(User);
-Cart.belongsToMany(Product, { through: CartItem });
-Product.belongsToMany(Cart, { through: CartItem });
-Order.belongsTo(User);
-User.hasMany(Order);
-Order.belongsToMany(Product, { through: OrderItem });
-
-sequelize
-  // .sync({ force: true }) // To overwrite all tables forcefully
-  .sync()
-  .then((result) => {
-    return User.findByPk(1);
-
-    // console.log(result)
-  })
-  .then((user) => {
-    if (!user) {
-      return User.create({ name: "Max", email: "max@gmail.com" });
-    }
-    return user;
-  })
-  .then((user) => {
-    return user.createCart();
-  })
-  .then((cart) => {
-    app.listen(3001);
-  })
-  .catch((error) => console.log(error));
