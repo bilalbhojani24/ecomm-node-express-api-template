@@ -1,0 +1,14 @@
+Lecture 1:-
+
+What is a cookie:-
+Client =>  request => logged In user sends cookie  => server
+Stored on the client side
+
+What is a session:-
+Client =>  cookie (associated with user client via cookie) -  session storage  => server
+
+Id id stored in DB(configured)
+User can send ID from cookie and server checks
+
+sendgrid
+bilal20245ig!VA)tP9n8M8@
