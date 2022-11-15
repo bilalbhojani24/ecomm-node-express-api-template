@@ -10,5 +10,3 @@ Client =>  cookie (associated with user client via cookie) -  session storage  =
 Id id stored in DB(configured)
 User can send ID from cookie and server checks
 
-sendgrid
-bilal20245ig!VA)tP9n8M8@
